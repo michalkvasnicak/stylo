@@ -1,5 +1,7 @@
 # Stylo
 
+[![Build Status](https://travis-ci.org/michalkvasnicak/stylo.svg?branch=master)](https://travis-ci.org/michalkvasnicak/stylo)
+
 Stylo is painless approach for styling [React](https://facebook.github.io/react/) components.
 
 It can be used with syntax similar to `StyleSheet.create` from [React Native](http://facebook.github.io/react-native/docs/stylesheet.html#content) or [Radium](https://github.com/FormidableLabs/radium)/[React-Style](https://github.com/js-next/react-style) syntax.
