@@ -8,7 +8,7 @@ It can be used with syntax similar to `StyleSheet.create` from [React Native](ht
 
 Stylo works server and client side. You just need to render `StyleSheetRegistry` to string on server and `dehydrate/rehydrate` it see Usage.
 
-**This library is experimental and it not tested in production!! Use on your own risk! Pull requests are welcome**
+**This library is experimental and it not tested in production!! Use at your own risk! Pull requests are welcome**
 
 ## Features
 
