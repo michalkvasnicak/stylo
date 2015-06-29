@@ -160,6 +160,7 @@ This library is experimental and tests are not exhaustive enough to uncover all 
 ## TODO
 
 * pass simple javascript objects directly to inline styles?
+* gh-pages
 * creating stylesheet from LESS syntax ?
 * creating stylesheet from CSS syntax
 * add build (now it is just part of workflow, so it is build by application which is using it)
