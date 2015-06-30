@@ -1,5 +1,5 @@
-var ReactElement = require("react/lib/ReactElement");
-var StyleSheet = require("./StyleSheet");
+var ReactElement = require('react/lib/ReactElement');
+var StyleSheet = require('./StyleSheet');
 
 /**
  * StyleSheet registry
@@ -10,7 +10,6 @@ var StyleSheet = require("./StyleSheet");
  * @constructor
  */
 function StyleSheetRegistry(onRuleInsert) {
-    "use strict";
 
     /**
      * Number of registered styles
@@ -41,7 +40,8 @@ function StyleSheetRegistry(onRuleInsert) {
      * @type {Function}
      * @param {string} rule
      */
-    this._insertRule = function(rule) {};
+    this._insertRule = function insertRule(/* rule */) {
+    };
 
     /**
      * This is called before rule is inserted (applied in browser)
@@ -52,9 +52,9 @@ function StyleSheetRegistry(onRuleInsert) {
      * @param {string} rule
      * @returns {string}
      */
-    this.onRuleInsert = onRuleInsert || function(rule) {
-        return rule;
-    };
+    this.onRuleInsert = onRuleInsert || function _onRuleInsert(rule) {
+            return rule;
+        };
 
     const canUseDOM = !!(
         typeof window !== 'undefined' &&
@@ -66,13 +66,13 @@ function StyleSheetRegistry(onRuleInsert) {
     // keep reference to insertRule method
     // but just only in DOM!!
     if (canUseDOM) {
-        const head = document.querySelector("head");
-        let style = head.querySelector("style");
+        const head = document.querySelector('head');
+        let style = head.querySelector('style');
 
         if (!style) {
-            style = document.createElement("style");
-            style.type = "text/css";
-            style.appendChild(document.createTextNode(""));
+            style = document.createElement('style');
+            style.type = 'text/css';
+            style.appendChild(document.createTextNode(''));
 
             head.appendChild(style);
         }
@@ -90,33 +90,34 @@ function StyleSheetRegistry(onRuleInsert) {
  *
  * @return {ReactElement}
  */
-StyleSheetRegistry.prototype.styleElement = function(element, props) {
-    "use strict";
+StyleSheetRegistry.prototype.styleElement = function styleElement(element, props) {
+    var classNames = [];
+    var className;
 
-    if (!(props || {}).hasOwnProperty("styles")) {
+    if (!(props || {}).hasOwnProperty('styles')) {
         return element;
     }
 
-    var classNames = [];
-
     // if styles is array, traverse and register only objects
     if (Array.isArray(props.styles)) {
-        props.styles.forEach((style) => {
-            // if style is not instance of StyleSheet, skip
-            //todo if is simple object (not instance of StyleSheet), use as inline style?
-            if (!(style instanceof StyleSheet)) {
-                return;
-            }
+        props.styles.forEach(
+            function registerStylesAndSetClassNames(style) {
+                // if style is not instance of StyleSheet, skip
+                // todo if is simple object (not instance of StyleSheet), use as inline style?
+                if (!(style instanceof StyleSheet)) {
+                    return;
+                }
 
-            var className = this._registerStyleAndReturnClassName(style);
+                className = this._registerStyleAndReturnClassName(style);
 
-            // register only one instance of same style sheet
-            if (classNames.indexOf(className) === -1) {
-                classNames.push(
-                    className
-                );
-            }
-        });
+                // register only one instance of same style sheet
+                if (classNames.indexOf(className) === -1) {
+                    classNames.push(
+                        className
+                    );
+                }
+            }.bind(this)
+        );
     } else if (props.styles instanceof StyleSheet) {
         classNames.push(
             this._registerStyleAndReturnClassName(props.styles)
@@ -127,10 +128,10 @@ StyleSheetRegistry.prototype.styleElement = function(element, props) {
 
     if (classNames.length) {
         // set styles before classNames if are defined
-        if (props.hasOwnProperty("className") && props.className.length) {
-            props.className = classNames.join(" ") + " " + props.className;
+        if (props.hasOwnProperty('className') && props.className.length) {
+            props.className = classNames.join(' ') + ' ' + props.className;
         } else {
-            props.className = classNames.join(" ");
+            props.className = classNames.join(' ');
         }
     }
 
@@ -149,25 +150,27 @@ StyleSheetRegistry.prototype.styleElement = function(element, props) {
  *
  * @return {string}
  */
-StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function(styleSheet) {
-    "use strict";
-
+StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function _registerStyleAndReturnClassName(styleSheet) {
     var styleHash = styleSheet.toMD5();
+    var classSelector;
+    var className;
 
     if (this.registered.hasOwnProperty(styleHash)) {
         return this.registered[styleHash];
     }
 
-    var classSelector = ".cls_" + (++this.count);
-    var className = classSelector.substr(1);
+    classSelector = '.cls_' + (++this.count);
+    className = classSelector.substr(1);
 
     this.registered[styleHash] = className;
 
     // register and transform default rules
     styleSheet
         .rules()
-        .map(function(rule) { return this.onRuleInsert(rule.toString(classSelector)); }.bind(this))
-        .forEach(function(rule) {
+        .map(function transformRule(rule) {
+            return this.onRuleInsert(rule.toString(classSelector));
+        }.bind(this))
+        .forEach(function insertRule(rule) {
             this._insertRule(rule, 0);
             this.rules.push(rule);
         }.bind(this));
@@ -175,8 +178,10 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function(styleSh
     // transform and register media queries
     styleSheet
         .mediaQueries()
-        .map(function(mediaQuery) { return this.onRuleInsert(mediaQuery.toString(classSelector)); }.bind(this))
-        .forEach(function(rule) {
+        .map(function transformRule(mediaQuery) {
+            return this.onRuleInsert(mediaQuery.toString(classSelector));
+        }.bind(this))
+        .forEach(function insertRule(rule) {
             this._insertRule(rule, 0);
             this.rules.push(rule);
         }.bind(this));
@@ -184,8 +189,10 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function(styleSh
     // transform and register key frames
     styleSheet
         .keyFrames()
-        .map(function(keyFrame) { return this.onRuleInsert(keyFrame.toString()); }.bind(this))
-        .forEach(function(rule) {
+        .map(function transformRule(keyFrame) {
+            return this.onRuleInsert(keyFrame.toString());
+        }.bind(this))
+        .forEach(function insertRule(rule) {
             this._insertRule(rule, 0);
             this.rules.push(rule);
         }.bind(this));
@@ -199,10 +206,8 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function(styleSh
  *
  * @returns {string}
  */
-StyleSheetRegistry.prototype.toString = function() {
-    "use strict";
-
-    return this.rules.join("");
+StyleSheetRegistry.prototype.toString = function toString() {
+    return this.rules.join('');
 };
 
 /**
@@ -210,14 +215,12 @@ StyleSheetRegistry.prototype.toString = function() {
  *
  * @returns {{count: number, registered: Object.<string, string>, rules: string[]}}
  */
-StyleSheetRegistry.prototype.dehydrate = function() {
-    "use strict";
-
+StyleSheetRegistry.prototype.dehydrate = function dehydrate() {
     return {
         count: this.count,
         registered: this.registered,
         rules: this.rules
-    }
+    };
 };
 
 /**
@@ -225,9 +228,7 @@ StyleSheetRegistry.prototype.dehydrate = function() {
  *
  * @param {{count: number, registered: Object.<string, string>, rules: string[]}} state
  */
-StyleSheetRegistry.prototype.rehydrate = function(state) {
-    "use strict";
-
+StyleSheetRegistry.prototype.rehydrate = function rehydrate(state) {
     this.count = state.count || 0;
     this.registered = state.registered || {};
     this.rules = state.rules || [];

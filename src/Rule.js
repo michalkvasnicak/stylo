@@ -1,5 +1,3 @@
-var invariant = require("react/lib/invariant");
-
 /**
  * CSS rule definition
  *
@@ -8,17 +6,16 @@ var invariant = require("react/lib/invariant");
  * @constructor
  */
 function Rule(pseudoSelector, style) {
-    "use strict";
-
-    if (typeof pseudoSelector === "object") {
-        style = pseudoSelector;
-        pseudoSelector = "default";
+    if (typeof pseudoSelector === 'object') {
+        this.style = pseudoSelector;
+        this.pseudoSelector = 'default';
     } else {
-        pseudoSelector = pseudoSelector || "default";
+        this.pseudoSelector = pseudoSelector || 'default';
+        this.style = style;
     }
 
-    this.pseudoSelector = (pseudoSelector !== "default") ? pseudoSelector : "";
-    this.style = style || {};
+    this.pseudoSelector = (this.pseudoSelector !== 'default') ? pseudoSelector : '';
+    this.style = this.style || {};
     this._cachedRule = null;
 }
 
@@ -28,24 +25,28 @@ function Rule(pseudoSelector, style) {
  * @param {string} identifier
  * @returns {string}
  */
-Rule.prototype.toString = function(identifier) {
-    "use strict";
+Rule.prototype.toString = function toString(identifier) {
+    var propertyNames;
+    var properties;
 
     if (this._cachedRule !== null) {
         return this._cachedRule;
     }
 
-    var propertyNames = Object.keys(this.style);
+    propertyNames = Object.keys(this.style);
 
-    var properties = propertyNames.map(function(property) {
+    properties = propertyNames.map(function convertCamelCaseToSnakeCase(property) {
         var value = this.style[property];
-        property = property.replace(/[A-Z]/g, function(char) { return "-" + char.toLowerCase(); });
 
-        return property + ":" + value;
+        var transformedProperty = property.replace(/[A-Z]/g, function lowerCaseAndPrefixChar(char) { return '-' + char.toLowerCase(); });
+
+        return transformedProperty + ':' + value;
     }.bind(this));
 
 
-    return this._cachedRule = identifier + this.pseudoSelector + "{" + properties.join(";") + "}";
+    this._cachedRule = identifier + this.pseudoSelector + '{' + properties.join(';') + '}';
+
+    return this._cachedRule;
 };
 
 module.exports = Rule;

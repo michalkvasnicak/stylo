@@ -1,4 +1,4 @@
-var helpers = require("../helpers");
+var helpers = require('../helpers');
 
 /**
  * Reformats style object to Stylo javascript object format
@@ -7,25 +7,22 @@ var helpers = require("../helpers");
  * @returns {{*}}
  */
 function reformatStyle(style) {
-    "use strict";
-
     // process javascript object to nested form
     // first find keyframes
-    var result = {
-    };
-
-    var properties = Object.keys(style), property;
+    var result = {};
+    var properties = Object.keys(style);
+    var property;
 
     while (property = properties.shift()) {
         // pseudo, just assign to result
-        if (property[0] === ":") {
+        if (property[0] === ':') {
             result[property] = style[property];
-        } else if (property.indexOf("@media") === 0) {
+        } else if (property.indexOf('@media') === 0) {
             result[property] = reformatStyle(style[property]);
-        } else if (property.indexOf("@keyframes") === 0) {
+        } else if (property.indexOf('@keyframes') === 0) {
             result[property] = style[property];
         } else {
-            if (!result.hasOwnProperty("default")) {
+            if (!result.hasOwnProperty('default')) {
                 result.default = {};
             }
 
@@ -43,9 +40,7 @@ function reformatStyle(style) {
  * @param {Function} next
  * @returns {StyleSheet}
  */
-module.exports = function(style, next) {
-    "use strict";
-
+module.exports = function simpleObjectProcessor(style, next) {
     // detect if it is javascript object or if is simple javascript object
     // if not, call next middleware
     if (!helpers.isObject(style) || !helpers.isSimpleJavascriptObject(style)) {
