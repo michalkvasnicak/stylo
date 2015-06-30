@@ -12,6 +12,11 @@ var StyleSheet = require('./StyleSheet');
 function StyleSheetRegistry(onRuleInsert) {
     var head;
     var style;
+    var canUseDOM = !!(
+        typeof window !== 'undefined' &&
+        window.document &&
+        window.document.createElement
+    );
 
     /**
      * Number of registered styles
@@ -57,12 +62,6 @@ function StyleSheetRegistry(onRuleInsert) {
     this.onRuleInsert = onRuleInsert || function _onRuleInsert(rule) {
             return rule;
         };
-
-    const canUseDOM = !!(
-        typeof window !== 'undefined' &&
-        window.document &&
-        window.document.createElement
-    );
 
     // find style element and if does not exist, create one
     // keep reference to insertRule method
