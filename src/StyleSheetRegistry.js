@@ -10,6 +10,8 @@ var StyleSheet = require('./StyleSheet');
  * @constructor
  */
 function StyleSheetRegistry(onRuleInsert) {
+    var head;
+    var style;
 
     /**
      * Number of registered styles
@@ -66,8 +68,8 @@ function StyleSheetRegistry(onRuleInsert) {
     // keep reference to insertRule method
     // but just only in DOM!!
     if (canUseDOM) {
-        const head = document.querySelector('head');
-        let style = head.querySelector('style');
+        head = document.querySelector('head');
+        style = head.querySelector('style');
 
         if (!style) {
             style = document.createElement('style');
