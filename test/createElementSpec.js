@@ -1,12 +1,12 @@
-import {} from "../src/createElement";
-import React from "react";
-import { expect } from "chai";
-import { stub } from "sinon";
-import StyleSheet from "../src/StyleSheet";
+import {} from '../src/createElement';
+import React from 'react';
+import { expect } from 'chai';
+import { stub } from 'sinon';
+import StyleSheet from '../src/StyleSheet';
 
 class ProvideContextComponent extends React.Component {
     getChildContext() {
-        return { _styleSheetRegistry: this.props.registry }
+        return { _styleSheetRegistry: this.props.registry };
     }
 }
 
@@ -18,10 +18,11 @@ ProvideContextComponent.propTypes = {
     registry: React.PropTypes.object.isRequired
 };
 
-describe("createElement", () => {
+describe('createElement', () => {
 
-    it("styles element using StyleSheetRegistry", () => {
+    it('styles element using StyleSheetRegistry', () => {
         const styleSheet = new StyleSheet({});
+        let rendered;
 
         class RootComponent extends ProvideContextComponent {
             render() {
@@ -37,16 +38,16 @@ describe("createElement", () => {
             styleElement() {}
         });
 
-        registry.styleElement.returns(<div className="cls_1"></div>);
+        registry.styleElement.returns(<div className='cls_1'></div>);
 
-        var rendered = React.renderToStaticMarkup(
+        rendered = React.renderToStaticMarkup(
             <RootComponent registry={registry} />
         );
 
         expect(rendered).to.equal('<div class="cls_1"></div>');
     });
 
-    it("does not style element using StyleSheetRegistry if element does not have styles", () => {
+    it('does not style element using StyleSheetRegistry if element does not have styles', () => {
         class RootComponent extends ProvideContextComponent {
             render() {
                 return (<TestComponent />);
@@ -61,9 +62,9 @@ describe("createElement", () => {
             styleElement() {}
         });
 
-        registry.styleElement.returns(<div className="cls_1"></div>);
+        registry.styleElement.returns(<div className='cls_1'></div>);
 
-        var rendered = React.renderToStaticMarkup(
+        let rendered = React.renderToStaticMarkup(
             <RootComponent registry={registry} />
         );
 

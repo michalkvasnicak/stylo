@@ -1,8 +1,23 @@
-var md5 = require("MD5");
-var Rule = require("./Rule");
-var KeyFrames = require("./KeyFrames");
-var MediaQuery = require("./MediaQuery");
-var styleProcessors = require("./StyleProcessors");
+var md5 = require('MD5');
+var Rule = require('./Rule');
+var KeyFrames = require('./KeyFrames');
+var MediaQuery = require('./MediaQuery');
+var styleProcessors = require('./StyleProcessors');
+
+// create style processing middleware chain
+var processorMiddlewareChain = function _processorMiddlewareChain() {
+    throw Error('Invalid style syntax!');
+};
+
+Object.keys(styleProcessors).reverse().forEach(
+    function middlewareWrapper(processorKey) {
+        processorMiddlewareChain = (function wrapPreviousMiddleware(processor, next) {
+            return function newMiddleware(style) {
+                return processor(style, next);
+            };
+        })(styleProcessors[processorKey], processorMiddlewareChain);
+    }
+);
 
 /**
  * StyleSheet definition
@@ -24,22 +39,22 @@ function StyleSheet(rules) {
  *
  * @returns {Rule[]}
  */
-StyleSheet.prototype.rules = function () {
-    "use strict";
-
+StyleSheet.prototype.rules = function rules() {
     // just everything that doesnt start with : or @ use as default style
 
     if (this._cachedRules !== null) {
         return this._cachedRules;
     }
 
-    return this._cachedRules = Object
+    this._cachedRules = Object
         .keys(this._rules)
-        .filter(function(rule) { return rule[0] !== "@"; })
-        .map(function(rule) {
+        .filter(function isBasicStyling(rule) { return rule[0] !== '@'; })
+        .map(function transformToRule(rule) {
             return new Rule(rule, this._rules[rule]);
         }.bind(this)
     );
+
+    return this._cachedRules;
 };
 
 /**
@@ -47,20 +62,20 @@ StyleSheet.prototype.rules = function () {
  *
  * @returns {MediaQuery[]}
  */
-StyleSheet.prototype.mediaQueries = function () {
-    "use strict";
-
+StyleSheet.prototype.mediaQueries = function mediaQueries() {
     if (this._cachedMediaQueries !== null) {
         return this._cachedMediaQueries;
     }
 
-    return this._cachedMediaQueries = Object
+    this._cachedMediaQueries = Object
         .keys(this._rules)
-        .filter(function(rule) { return rule.substr(0, 6) === "@media"; })
-        .map(function(rule) {
+        .filter(function isMediaQuery(rule) { return rule.substr(0, 6) === '@media'; })
+        .map(function transfromToMediaQueryRule(rule) {
             return new MediaQuery(rule, this._rules[rule]);
         }.bind(this)
     );
+
+    return this._cachedMediaQueries;
 };
 
 /**
@@ -68,20 +83,20 @@ StyleSheet.prototype.mediaQueries = function () {
  *
  * @returns {KeyFrames[]}
  */
-StyleSheet.prototype.keyFrames = function () {
-    "use strict";
-
+StyleSheet.prototype.keyFrames = function keyFrames() {
     if (this._cachedKeyFrames !== null) {
         return this._cachedKeyFrames;
     }
 
-    return this._cachedKeyFrames = Object
+    this._cachedKeyFrames = Object
         .keys(this._rules)
-        .filter(function(rule) { return rule.substr(0, 10) === "@keyframes"; })
-        .map(function(rule) {
+        .filter(function isKeyframes(rule) { return rule.substr(0, 10) === '@keyframes'; })
+        .map(function transformToKeyFramesRule(rule) {
             return new KeyFrames(rule, this._rules[rule]);
         }.bind(this)
     );
+
+    return this._cachedKeyFrames;
 };
 
 /**
@@ -89,34 +104,14 @@ StyleSheet.prototype.keyFrames = function () {
  *
  * @returns {string}
  */
-StyleSheet.prototype.toMD5 = function () {
-    "use strict";
-
+StyleSheet.prototype.toMD5 = function toMD5() {
     // lazy evaluation
     if (this.hashCode === null) {
-        return this.hashCode = md5(JSON.stringify(this._rules));
+        this.hashCode = md5(JSON.stringify(this._rules));
     }
 
     return this.hashCode;
 };
-
-
-// create style processing middleware chain
-var processorMiddlewareChain = function() {
-    "use strict";
-    console.log("error middleware");
-    throw Error("Invalid style syntax!");
-};
-
-Object.keys(styleProcessors).reverse().forEach(function(processorKey) {
-    "use strict";
-
-    processorMiddlewareChain = (function(processor, next) {
-        return function(style) {
-            return processor(style, next);
-        };
-    })(styleProcessors[processorKey], processorMiddlewareChain);
-});
 
 /**
  * Creates stylesheet from style object
@@ -125,20 +120,19 @@ Object.keys(styleProcessors).reverse().forEach(function(processorKey) {
  *
  * @returns {StyleSheet|Object.<string, StyleSheet>}
  */
-StyleSheet.create = function(style) {
-    "use strict";
-
+StyleSheet.create = function create(style) {
     // middleware chain
     var result = processorMiddlewareChain(style);
+    var temp;
 
     // if result is array, then there are nested styles
     // just turn it to object of StyleSheet objects
     if (Array.isArray(result)) {
-        var temp = {};
+        temp = {};
 
-        result.forEach(function(style) {
+        result.forEach(function formatArrayResult(_style) {
             // first index is name of style, second is definition
-            temp[style[0]] = new StyleSheet(style[1]);
+            temp[_style[0]] = new StyleSheet(_style[1]);
         });
 
         return temp;

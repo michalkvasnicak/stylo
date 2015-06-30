@@ -5,19 +5,18 @@
  * @returns {boolean}
  */
 function isSimpleJavascriptObject(style) {
-    "use strict";
-
-    var properties = Object.keys(style), property;
+    var properties = Object.keys(style);
+    var property;
 
     while (property = properties.shift()) {
-        if (property[0] === "@") {
+        if (property[0] === '@') {
             // we need to check media query for the same!
             if (isSimpleJavascriptObject(style[property])) {
                 return true;
             }
         } else {
             // if first property value is scalar or name contains : on start it is simple object (propably)
-            if (property[0] === ":" || !isObject(style[property])) {
+            if (property[0] === ':' || !isObject(style[property])) {
                 return true;
             }
         }
@@ -27,9 +26,7 @@ function isSimpleJavascriptObject(style) {
 }
 
 function isObject(value) {
-    "use strict";
-
-    return (typeof value === "object" && value !== null)
+    return (typeof value === 'object' && value !== null);
 }
 
 module.exports = {

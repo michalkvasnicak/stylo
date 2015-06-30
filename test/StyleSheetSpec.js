@@ -1,17 +1,14 @@
-const StyleSheet = require("../src/StyleSheet");
+import StyleSheet from '../src/StyleSheet';
+import { expect } from 'chai';
+import md5 from 'MD5';
 
-import { expect } from "chai";
-import md5 from "MD5";
+describe('StyleSheet', () => {
 
-describe("StyleSheet", () => {
-
-    describe("#create", () => {
-        "use strict";
-
-        it("creates StyleSheet from object with Radium/React StyleSheet/React-Style like syntax", () => {
+    describe('#create', () => {
+        it('creates StyleSheet from object with Radium/React StyleSheet/React-Style like syntax', () => {
             const styleSheet = StyleSheet.create({
-                fontSize: "10px",
-                ":hover": {
+                fontSize: '10px',
+                ':hover': {
                     fontSize: 20
                 }
             });
@@ -19,24 +16,24 @@ describe("StyleSheet", () => {
             expect(styleSheet).to.be.instanceof(StyleSheet);
         });
 
-        it("creates StyleSheet from nested styles with Radium/React StyleSheet/React-Style like syntax", () => {
+        it('creates StyleSheet from nested styles with Radium/React StyleSheet/React-Style like syntax', () => {
             const styleSheet = StyleSheet.create({
                 base: {
-                    fontSize: "10px"
+                    fontSize: '10px'
                 },
                 header: {
-                    color: "#000"
+                    color: '#000'
                 }
             });
 
-            expect(styleSheet).to.be.an("object").and.have.property("base").with.instanceof(StyleSheet);
-            expect(styleSheet).to.be.an("object").and.have.property("header").with.instanceof(StyleSheet);
+            expect(styleSheet).to.be.an('object').and.have.property('base').with.instanceof(StyleSheet);
+            expect(styleSheet).to.be.an('object').and.have.property('header').with.instanceof(StyleSheet);
         });
     });
 
-    describe("#toMD5()", () => {
+    describe('#toMD5()', () => {
 
-        it("lazy evaluates md5 hash for given styles", () => {
+        it('lazy evaluates md5 hash for given styles', () => {
             const styleSheet = new StyleSheet({});
 
             expect(styleSheet.hashCode).to.equal(null);
@@ -52,73 +49,70 @@ describe("StyleSheet", () => {
             expect(styleSheet.hashCode).to.equal(hash);
         });
 
-        it("returns same hashes for same styles", () => {
-            const styleSheet = new StyleSheet({ fontSize: "10px" });
-            const styleSheet2 = new StyleSheet({ fontSize: "10px" });
+        it('returns same hashes for same styles', () => {
+            const styleSheet = new StyleSheet({ fontSize: '10px' });
+            const styleSheet2 = new StyleSheet({ fontSize: '10px' });
 
             expect(styleSheet.toMD5()).to.equal(styleSheet2.toMD5());
         });
 
     });
 
-    describe("#rules()", () => {
+    describe('#rules()', () => {
 
-        it("returns basic rules", () => {
-            "use strict";
+        it('returns basic rules', () => {
             const styleSheet = new StyleSheet({
-                default: { fontSize: "10px" },
-                ":hover": { fontSize: "20px"},
-                "@media all": {
-                    default: { fontSize: "10px" }
+                'default': { fontSize: '10px' },
+                ':hover': { fontSize: '20px'},
+                '@media all': {
+                    'default': { fontSize: '10px' }
                 },
-                "@keyframes resize": {}
+                '@keyframes resize': {}
             });
 
             const rules = styleSheet.rules();
 
-            expect(rules).to.be.a("array");
+            expect(rules).to.be.a('array');
             expect(rules.length).to.be.equal(2);
         });
 
     });
 
-    describe("#mediaQueries()", () => {
+    describe('#mediaQueries()', () => {
 
-        it("returns media querie rules", () => {
-            "use strict";
+        it('returns media querie rules', () => {
             const styleSheet = new StyleSheet({
-                default: { fontSize: "10px" },
-                ":hover": { fontSize: "20px"},
-                "@media all": {
-                    default: { fontSize: "10px" }
+                'default': { fontSize: '10px' },
+                ':hover': { fontSize: '20px'},
+                '@media all': {
+                    'default': { fontSize: '10px' }
                 },
-                "@keyframes resize": {}
+                '@keyframes resize': {}
             });
 
             const rules = styleSheet.mediaQueries();
 
-            expect(rules).to.be.a("array");
+            expect(rules).to.be.a('array');
             expect(rules.length).to.be.equal(1);
         });
 
     });
 
-    describe("#keyframes()", () => {
+    describe('#keyframes()', () => {
 
-        it("returns keyframes rules", () => {
-            "use strict";
+        it('returns keyframes rules', () => {
             const styleSheet = new StyleSheet({
-                default: { fontSize: "10px" },
-                ":hover": { fontSize: "20px"},
-                "@media all": {
-                    default: { fontSize: "10px" }
+                'default': { fontSize: '10px' },
+                ':hover': { fontSize: '20px'},
+                '@media all': {
+                    'default': { fontSize: '10px' }
                 },
-                "@keyframes resize": {}
+                '@keyframes resize': {}
             });
 
             const rules = styleSheet.keyFrames();
 
-            expect(rules).to.be.a("array");
+            expect(rules).to.be.a('array');
             expect(rules.length).to.be.equal(1);
         });
 

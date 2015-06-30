@@ -1,6 +1,6 @@
-var invariant = require("react/lib/invariant");
-var Rule = require("./Rule");
-var KeyFrames = require("./KeyFrames");
+var Rule = require('./Rule');
+var KeyFrames = require('./KeyFrames');
+var isObject = require('./helpers').isObject;
 
 /**
  * Media query rule definition
@@ -10,29 +10,26 @@ var KeyFrames = require("./KeyFrames");
  * @constructor
  */
 function MediaQuery(rule, rules) {
-    "use strict";
-
-    rules = rules || {};
-
     this.rule = rule;
-    this.rules = Object.keys(rules).map(function(rule) {
-        var ruleType = typeof rules[rule];
-
-        invariant(
-            (ruleType === "object" && rules[rule] !== null),
-            "Rule `" + rule + "` is invalid, object expected but " + rules[rule] + " given"
-        );
-
-        if (rule[0] === "@") {
-            if (rule.indexOf("@keyframes ") > -1) {
-                return new KeyFrames(rule, rules[rule]);
-            } else {
-                invariant(false, "Only @keyframes can be nested in media queries");
+    this.rules = Object.keys(rules || {}).map(
+        function transformDefinitionsToRules(ruleDefinition) {
+            if (!isObject(rules[ruleDefinition])) {
+                throw Error(
+                    'Rule `' + ruleDefinition + '` is invalid, object expected but ' + rules[ruleDefinition] + ' given'
+                );
             }
-        } else {
-            return new Rule(rule, rules[rule]);
+
+            if (ruleDefinition[0] === '@') {
+                if (ruleDefinition.indexOf('@keyframes ') > -1) {
+                    return new KeyFrames(ruleDefinition, rules[ruleDefinition]);
+                }
+
+                throw Error('Only @keyframes can be nested in media queries');
+            } else {
+                return new Rule(ruleDefinition, rules[ruleDefinition]);
+            }
         }
-    }.bind(this));
+    );
 
     this._cachedRule = null;
 }
@@ -43,16 +40,18 @@ function MediaQuery(rule, rules) {
  * @param {string} identifier
  * @returns {string}
  */
-MediaQuery.prototype.toString = function(identifier) {
-    "use strict";
-
+MediaQuery.prototype.toString = function toString(identifier) {
     if (this._cachedRule !== null) {
         return this._cachedRule;
     }
 
-    return this._cachedRule = this.rule + "{" +
-        this.rules.map(function(rule) { return rule.toString(identifier); }).join("") +
-    "}";
+    this._cachedRule = this.rule + '{' +
+        this.rules.map(
+            function convertRuleToString(rule) { return rule.toString(identifier); }
+        ).join('') +
+    '}';
+
+    return this._cachedRule;
 };
 
 module.exports = MediaQuery;

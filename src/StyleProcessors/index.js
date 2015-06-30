@@ -1,4 +1,4 @@
 module.exports = {
-    simpleObjectProcessor: require("./simpleObjectProcessor"),
-    nestedObjectProcessor: require("./nestedObjectProcessor")
+    simpleObjectProcessor: require('./simpleObjectProcessor'),
+    nestedObjectProcessor: require('./nestedObjectProcessor')
 };
