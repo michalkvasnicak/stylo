@@ -8,6 +8,11 @@ function isSimpleJavascriptObject(style) {
     var properties = Object.keys(style);
     var property;
 
+    // if is empty style
+    if (!properties.length) {
+        return true;
+    }
+
     while (property = properties.shift()) {
         if (property[0] === '@') {
             // we need to check media query for the same!

@@ -23,6 +23,7 @@ describe('Integration test', () => {
             base: {
                 background: '#000'
             },
+            pom: {},
             test: {
                 ':hover': {
                     color: '#ffffff'
