@@ -155,6 +155,7 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function _regist
     var styleHash = styleSheet.toMD5();
     var classSelector;
     var className;
+    var ruleIndex = this.count; // this is counted from 0
 
     if (this.registered.hasOwnProperty(styleHash)) {
         return this.registered[styleHash];
@@ -172,7 +173,7 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function _regist
             return this.onRuleInsert(rule.toString(classSelector));
         }.bind(this))
         .forEach(function insertRule(rule) {
-            this._insertRule(rule, this.count);
+            this._insertRule(rule, ruleIndex);
             this.rules.push(rule);
         }.bind(this));
 
@@ -183,7 +184,7 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function _regist
             return this.onRuleInsert(mediaQuery.toString(classSelector));
         }.bind(this))
         .forEach(function insertRule(rule) {
-            this._insertRule(rule, this.count);
+            this._insertRule(rule, ruleIndex);
             this.rules.push(rule);
         }.bind(this));
 
@@ -194,7 +195,7 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function _regist
             return this.onRuleInsert(keyFrame.toString());
         }.bind(this))
         .forEach(function insertRule(rule) {
-            this._insertRule(rule, this.count);
+            this._insertRule(rule, ruleIndex);
             this.rules.push(rule);
         }.bind(this));
 
