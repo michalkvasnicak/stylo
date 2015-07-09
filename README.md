@@ -60,6 +60,20 @@ React.renderToStaticMarkup(
     </html>
 );
 
+// or using element() method 
+React.renderToStaticMarkup(
+    <html>
+        <head>
+            {registry.element()}
+        </head>
+        <body>
+            <div id="content" dangerouslySetInnerHTML={{ __html: renderedApp }} />
+            <script dangerouslySetInnerHTML={{ __html: state }}></script>
+            <script> load your app js </script>
+        </body>
+    </html>
+)
+
 // app.js
 
 var Stylo = require("stylo");

@@ -1,4 +1,5 @@
 var ReactElement = require('react/lib/ReactElement');
+var React = require('react');
 var StyleSheet = require('./StyleSheet');
 
 /**
@@ -24,6 +25,13 @@ function StyleSheetRegistry(onRuleInsert) {
      * Used for generating unique class names
      */
     this.count = 0;
+
+    /**
+     * Index of next rule
+     *
+     * @type {number}
+     */
+    this.ruleIndex = 0;
 
     /**
      * Map of md5 hash => css class name
@@ -68,10 +76,11 @@ function StyleSheetRegistry(onRuleInsert) {
     // but just only in DOM!!
     if (canUseDOM) {
         head = document.querySelector('head');
-        style = head.querySelector('style');
+        style = head.querySelector('#style-sheet-registry');
 
         if (!style) {
             style = document.createElement('style');
+            style.id = 'style-sheet-registry';
             style.type = 'text/css';
             style.appendChild(document.createTextNode(''));
 
@@ -155,7 +164,6 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function _regist
     var styleHash = styleSheet.toMD5();
     var classSelector;
     var className;
-    var ruleIndex = this.count; // this is counted from 0
 
     if (this.registered.hasOwnProperty(styleHash)) {
         return this.registered[styleHash];
@@ -173,7 +181,7 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function _regist
             return this.onRuleInsert(rule.toString(classSelector));
         }.bind(this))
         .forEach(function insertRule(rule) {
-            this._insertRule(rule, ruleIndex);
+            this._insertRule(rule, this.ruleIndex++);
             this.rules.push(rule);
         }.bind(this));
 
@@ -184,7 +192,7 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function _regist
             return this.onRuleInsert(mediaQuery.toString(classSelector));
         }.bind(this))
         .forEach(function insertRule(rule) {
-            this._insertRule(rule, ruleIndex);
+            this._insertRule(rule, this.ruleIndex++);
             this.rules.push(rule);
         }.bind(this));
 
@@ -195,7 +203,7 @@ StyleSheetRegistry.prototype._registerStyleAndReturnClassName = function _regist
             return this.onRuleInsert(keyFrame.toString());
         }.bind(this))
         .forEach(function insertRule(rule) {
-            this._insertRule(rule, ruleIndex);
+            this._insertRule(rule, this.ruleIndex++);
             this.rules.push(rule);
         }.bind(this));
 
@@ -213,13 +221,30 @@ StyleSheetRegistry.prototype.toString = function toString() {
 };
 
 /**
+ * Returns style element with registered rules
+ *
+ * @returns {ReactElement}
+ */
+StyleSheetRegistry.prototype.element = function createStyleSheetElement() {
+    return React.createElement(
+        'style',
+        {
+            id: 'style-sheet-registry',
+            type: 'text/css',
+            dangerouslySetInnerHTML: { __html: this.toString() }
+        }
+    );
+};
+
+/**
  * Returns simple JS object representation of internal state
  *
- * @returns {{count: number, registered: Object.<string, string>, rules: string[]}}
+ * @returns {{count: number, ruleIndex: number, registered: Object.<string, string>, rules: string[]}}
  */
 StyleSheetRegistry.prototype.dehydrate = function dehydrate() {
     return {
         count: this.count,
+        ruleIndex: this.ruleIndex,
         registered: this.registered,
         rules: this.rules
     };
@@ -228,10 +253,11 @@ StyleSheetRegistry.prototype.dehydrate = function dehydrate() {
 /**
  * Sets internal state to given state
  *
- * @param {{count: number, registered: Object.<string, string>, rules: string[]}} state
+ * @param {{count: number, ruleIndex: number, registered: Object.<string, string>, rules: string[]}} state
  */
 StyleSheetRegistry.prototype.rehydrate = function rehydrate(state) {
     this.count = state.count || 0;
+    this.ruleIndex = state.ruleIndex || 0;
     this.registered = state.registered || {};
     this.rules = state.rules || [];
 };

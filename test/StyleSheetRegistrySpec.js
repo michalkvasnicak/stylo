@@ -96,7 +96,7 @@ describe('StyleSheetRegistry', () => {
         describe('client side', () => {
 
             beforeEach(() => {
-                const { window, document } = jsdom('<!doctype html><html><head><style></style></head><body></body></html>');
+                const { window, document } = jsdom('<!doctype html><html><head><style id="style-sheet-registry"></style></head><body></body></html>');
 
                 global.window = window;
                 global.document = document;
@@ -137,6 +137,7 @@ describe('StyleSheetRegistry', () => {
                 expect(styledElement.props).to.have.property('className').that.is.equal('cls_1 cls');
 
                 expect(insertRule.getCall(0).args[0]).to.be.eq('.cls_1{}');
+                expect(insertRule.getCall(0).args[1]).to.be.eq(0);
                 expect(insertRule.callCount).to.be.eq(1);
 
                 // multiple styles
@@ -148,6 +149,7 @@ describe('StyleSheetRegistry', () => {
 
                 // cls_1 is not called because it is already registered
                 expect(insertRule.getCall(1).args[0]).to.be.eq('.cls_2{}');
+                expect(insertRule.getCall(1).args[1]).to.be.eq(1);
 
                 // duplicated styles
                 styledElement = registry.styleElement(element, { className: 'cls', styles: [styleSheet, styleSheet, styleSheet2, 10, 'pom', {}]});
