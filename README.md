@@ -50,7 +50,7 @@ var state = "window.__serializedRegistryState = " + serialize(registry.dehydrate
 React.renderToStaticMarkup(
     <html>
         <head>
-            <style dangerouslySetInnerHTML={{ __html: registry.toString() }} />
+            <style id="style-sheet-registry" dangerouslySetInnerHTML={{ __html: registry.toString() }} />
         </head>
         <body>
             <div id="content" dangerouslySetInnerHTML={{ __html: renderedApp }} />
