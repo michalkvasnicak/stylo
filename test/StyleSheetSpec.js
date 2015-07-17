@@ -1,6 +1,6 @@
 import StyleSheet from '../src/StyleSheet';
 import { expect } from 'chai';
-import md5 from 'MD5';
+import md5 from 'md5';
 
 describe('StyleSheet', () => {
 
