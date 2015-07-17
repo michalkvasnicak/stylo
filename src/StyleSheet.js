@@ -1,4 +1,4 @@
-var md5 = require('MD5');
+var md5 = require('md5');
 var Rule = require('./Rule');
 var KeyFrames = require('./KeyFrames');
 var MediaQuery = require('./MediaQuery');

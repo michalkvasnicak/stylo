@@ -96,12 +96,12 @@ describe('StyleSheetRegistry', () => {
         describe('client side', () => {
 
             beforeEach(() => {
-                const { window, document } = jsdom('<!doctype html><html><head><style id="style-sheet-registry"></style></head><body></body></html>');
+                const { document } = jsdom('<!doctype html><html><head><style id="style-sheet-registry"></style></head><body></body></html>');
 
-                global.window = window;
+                global.window = document.defaultView;
                 global.document = document;
 
-                insertRule = global.document.querySelector('style').sheet.insertRule = spy();
+                insertRule = global.document.querySelector('style').sheet.insertRule = spy(global.document.querySelector('style').sheet.insertRule);
 
                 registry = new StyleSheetRegistry();
             });
