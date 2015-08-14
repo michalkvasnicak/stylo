@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import jsdom from './jsdom';
 import StyleSheetRegistry from '../src/StyleSheetRegistry';
 import StyleSheet from '../src/StyleSheet';
 import { stub, spy } from 'sinon';
@@ -96,6 +95,8 @@ describe('StyleSheetRegistry', () => {
         describe('client side', () => {
 
             beforeEach(() => {
+                const jsdom = require('./jsdom');
+
                 const { document } = jsdom('<!doctype html><html><head><style id="style-sheet-registry"></style></head><body></body></html>');
 
                 global.window = document.defaultView;
