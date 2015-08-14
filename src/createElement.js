@@ -1,9 +1,9 @@
-var ReactElement = require('react/lib/ReactElement');
+var React = require('react');
 var ReactContext = require('react/lib/ReactContext');
 
-var originalCreateElement = ReactElement.createElement;
+var originalCreateElement = React.createElement;
 
-ReactElement.createElement = function createElement(type, props) {
+React.createElement = function createElement(type, props) {
 
     // call original so we have ReactContext populated with current context
     var createdElement = originalCreateElement.apply(this, arguments);
