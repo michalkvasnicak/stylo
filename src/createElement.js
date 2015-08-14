@@ -3,7 +3,7 @@ var ReactContext = require('react/lib/ReactContext');
 
 var originalCreateElement = React.createElement;
 
-React.createElement = function createElement(type, props) {
+function createElement(type, props) {
 
     // call original so we have ReactContext populated with current context
     var createdElement = originalCreateElement.apply(this, arguments);
@@ -26,4 +26,8 @@ React.createElement = function createElement(type, props) {
     registry = currentContext._styleSheetRegistry;
 
     return registry.styleElement(createdElement, props);
-};
+}
+
+if (React.createElement !== createElement) {
+    React.createElement = createElement;
+}

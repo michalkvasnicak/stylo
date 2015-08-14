@@ -1,8 +1,3 @@
-/**
- * @author Michal Kvasničák <michal.kvasnicak@mink.sk>
- * @copyright Mink, ltd 2015
- */
-
 import { expect } from 'chai';
 import Rule from '../src/Rule';
 
