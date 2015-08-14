@@ -21,12 +21,12 @@ validate_semver $next_version
 
 next_ref="v$next_version"
 
-npm test -- --single-run
+npm test
 
 update_version 'package.json' $next_version
 
 git add -A src
-git add -A testc
+git add -A test
 
 git commit -am "Version $next_version"
 
