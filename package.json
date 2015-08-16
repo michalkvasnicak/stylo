@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint src test",
-    "test": "npm run lint && prever 'test/**/*Spec.js' 'test/integration-test.js' a.js"
+    "test": "npm run lint && prever -v 'test/**/*Spec.js' 'test/integration-test.js'"
   },
   "repository": {
     "type": "git",
