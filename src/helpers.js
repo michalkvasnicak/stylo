@@ -1,4 +1,14 @@
 /**
+ * Is value an object?
+ *
+ * @param {*} value
+ * @returns {boolean}
+ */
+function isObject(value) {
+    return (typeof value === 'object' && value !== null);
+}
+
+/**
  * Detects if given style is simple javascript object
  *
  * @param {Object} style
@@ -28,10 +38,6 @@ function isSimpleJavascriptObject(style) {
     }
 
     return false;
-}
-
-function isObject(value) {
-    return (typeof value === 'object' && value !== null);
 }
 
 module.exports = {

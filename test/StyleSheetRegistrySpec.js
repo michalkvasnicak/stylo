@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import StyleSheetRegistry from '../src/StyleSheetRegistry';
 import StyleSheet from '../src/StyleSheet';
 import { stub, spy } from 'sinon';
+import jsdom from './jsdom';
 import React from 'react';
 
 describe('StyleSheetRegistry', () => {
@@ -16,7 +17,7 @@ describe('StyleSheetRegistry', () => {
         });
 
         it('skips element styling if element does not have styles prop and returns it', () => {
-            const element = <div className='cls'></div>;
+            const element = <div className="cls"></div>;
 
             const styledElement = registry.styleElement(element, {});
 
@@ -43,8 +44,8 @@ describe('StyleSheetRegistry', () => {
             });
 
             it('styles element using StyleSheet styles', () => {
-                let styleSheet = stub(new StyleSheet({}));
-                let styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
+                const styleSheet = stub(new StyleSheet({}));
+                const styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
 
                 // restore to use original implementation
                 styleSheet.toMD5.restore();
@@ -95,8 +96,6 @@ describe('StyleSheetRegistry', () => {
         describe('client side', () => {
 
             beforeEach(() => {
-                const jsdom = require('./jsdom');
-
                 const { document } = jsdom('<!doctype html><html><head><style id="style-sheet-registry"></style></head><body></body></html>');
 
                 global.window = document.defaultView;
@@ -113,8 +112,8 @@ describe('StyleSheetRegistry', () => {
             });
 
             it('styles element using StyleSheet styles', () => {
-                let styleSheet = stub(new StyleSheet({}));
-                let styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
+                const styleSheet = stub(new StyleSheet({}));
+                const styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
 
                 // restore to use original implementation
                 styleSheet.toMD5.restore();
@@ -171,8 +170,8 @@ describe('StyleSheetRegistry', () => {
         it('dehydrates internal state to simple JS object', () => {
             const registry = new StyleSheetRegistry();
 
-            let styleSheet = stub(new StyleSheet({ 'default': { color: '#000', padding: '10px' }}));
-            let styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
+            const styleSheet = stub(new StyleSheet({ 'default': { color: '#000', padding: '10px' }}));
+            const styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
 
             // restore to use original implementation
             styleSheet.toMD5.restore();
@@ -201,7 +200,7 @@ describe('StyleSheetRegistry', () => {
         it('rehydrates internal state from simple JS object', () => {
             const registry = new StyleSheetRegistry();
 
-            let styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
+            const styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
             styleSheet2.toMD5.restore();
 
             styleSheet2.rules.returns([{ toString: () => '.cls_2:hover{font-size:10px}'}]);
@@ -230,8 +229,8 @@ describe('StyleSheetRegistry', () => {
         it('returns CSS ruleset', () => {
             const registry = new StyleSheetRegistry();
 
-            let styleSheet = stub(new StyleSheet({ 'default': { color: '#000', padding: '10px' }}));
-            let styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
+            const styleSheet = stub(new StyleSheet({ 'default': { color: '#000', padding: '10px' }}));
+            const styleSheet2 = stub(new StyleSheet({ ':hover': { fontSize: '10px' }}));
 
             // restore to use original implementation
             styleSheet.toMD5.restore();

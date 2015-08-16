@@ -1,3 +1,4 @@
+/* eslint react/no-multi-comp:0 */
 import {} from '../src/createElement';
 import React from 'react';
 import { expect } from 'chai';
@@ -34,11 +35,11 @@ describe('createElement', () => {
             render() { return (<div styles={styleSheet} />); }
         }
 
-        let registry = stub({
+        const registry = stub({
             styleElement() {}
         });
 
-        registry.styleElement.returns(<div className='cls_1'></div>);
+        registry.styleElement.returns(<div className="cls_1"></div>);
 
         rendered = React.renderToStaticMarkup(
             <RootComponent registry={registry} />
@@ -58,13 +59,13 @@ describe('createElement', () => {
             render() { return (<div />); }
         }
 
-        let registry = stub({
+        const registry = stub({
             styleElement() {}
         });
 
-        registry.styleElement.returns(<div className='cls_1'></div>);
+        registry.styleElement.returns(<div className="cls_1"></div>);
 
-        let rendered = React.renderToStaticMarkup(
+        const rendered = React.renderToStaticMarkup(
             <RootComponent registry={registry} />
         );
 
