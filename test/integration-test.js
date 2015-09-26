@@ -1,13 +1,35 @@
+/* eslint react/no-multi-comp:0, no-unused-vars:0 */
+import createElement from '../src/createElement';
 import { expect } from 'chai';
 import { spy } from 'sinon';
 import React from 'react';
-import { StyleSheetRegistry, StyleSheet, StyloWrapperMixin } from '../src';
+import ReactDOM from 'react-dom/server';
+import { StyleSheetRegistry, StyleSheet } from '../src';
 
+class ProvideContextComponent extends React.Component {
+    getChildContext() {
+        return { _styleSheetRegistry: this.props.registry };
+    }
+
+    render() {
+        return this.props.children;
+    }
+}
+
+ProvideContextComponent.childContextTypes = {
+    _styleSheetRegistry: React.PropTypes.object.isRequired
+};
+
+ProvideContextComponent.propTypes = {
+    registry: React.PropTypes.object.isRequired
+};
 
 describe('Integration test', () => {
 
     it('registers rules using insertRule API and keeps rules in collection', () => {
-        const onRuleInsert = spy(function onRuleInsert(rule) { return rule; });
+        const onRuleInsert = spy(function onRuleInsert(rule) {
+            return rule;
+        });
 
         const registry = new StyleSheetRegistry(onRuleInsert);
 
@@ -39,10 +61,8 @@ describe('Integration test', () => {
             }
         });
 
-        const Wrapper = React.createClass({
-            mixins: [StyloWrapperMixin],
-
-            render: function render() {
+        class DivParent extends React.Component {
+            render() {
                 return (
                     <div styles={styleSheet}>
                         <div styles={complexStyleSheet.base}></div>
@@ -51,9 +71,17 @@ describe('Integration test', () => {
                     </div>
                 );
             }
-        });
+        }
 
-        React.renderToString(<Wrapper registry={registry} />);
+        DivParent.contextTypes = {
+            '_styleSheetRegistry': React.PropTypes.object.isRequired
+        };
+
+        ReactDOM.renderToStaticMarkup(
+            <ProvideContextComponent registry={registry}>
+                <DivParent />
+            </ProvideContextComponent>
+        );
 
         expect(onRuleInsert.getCall(0).args[0]).to.be.equal('.cls_1{background:#000}');
         expect(onRuleInsert.getCall(1).args[0]).to.be.equal('.cls_2{font-size:10px}');

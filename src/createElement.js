@@ -1,5 +1,4 @@
 var React = require('react');
-var ReactContext = require('react/lib/ReactContext');
 
 var originalCreateElement = React.createElement;
 
@@ -15,7 +14,7 @@ function createElement(type, props) {
         return createdElement;
     }
 
-    currentContext = ReactContext.current || {};
+    currentContext = createdElement._owner ? createdElement._owner._context : {};
 
     // if style sheet registry is not defined on current context
     if (!currentContext.hasOwnProperty('_styleSheetRegistry')) {
