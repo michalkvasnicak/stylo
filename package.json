@@ -1,6 +1,6 @@
 {
   "name": "stylo",
-  "version": "0.4.1",
+  "version": "1.0.0-alpha.1",
   "description": "Stylo is painless approach for styling React components",
   "main": "src/index.js",
   "scripts": {
