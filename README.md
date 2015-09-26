@@ -1,6 +1,6 @@
 # Stylo
 
-[![Build Status](https://travis-ci.org/michalkvasnicak/stylo.svg?branch=master)](https://travis-ci.org/michalkvasnicak/stylo)
+[![Circle CI](https://circleci.com/gh/michalkvasnicak/stylo.svg?style=svg)](https://circleci.com/gh/michalkvasnicak/stylo)
 
 Stylo is painless approach for styling [React](https://facebook.github.io/react/) components.
 

@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint src test",
-    "test": "npm run lint && prever 'test/**/*Spec.js' 'test/integration-test.js'"
+    "test": "prever 'test/**/*Spec.js' 'test/integration-test.js'"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/michalkvasnicak/stylo",
   "peerDependencies": {
-    "react": ">=0.12.0 <=0.14.0"
+    "react": "^0.13.0 || ^0.14.0-rc1 || ^0.14.0"
   },
   "dependencies": {
     "md5": "^2.0.0"
@@ -38,7 +38,7 @@
     "chai": "^3.0.0",
     "eslint": "^1.0.0",
     "jsdom": "^6.0.0",
-    "react": "^0.13.3",
+    "react": "^0.14.0-rc1",
     "prever": "^0.4.0",
     "sinon": "git://github.com/cjohansen/Sinon.JS#sinon-2.0"
   }
