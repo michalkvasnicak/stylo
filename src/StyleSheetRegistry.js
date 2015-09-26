@@ -68,8 +68,8 @@ function StyleSheetRegistry(onRuleInsert) {
      * @returns {string}
      */
     this.onRuleInsert = onRuleInsert || function _onRuleInsert(rule) {
-            return rule;
-        };
+        return rule;
+    };
 
     // find style element and if does not exist, create one
     // keep reference to insertRule method
